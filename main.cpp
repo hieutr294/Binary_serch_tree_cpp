@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <math.h>
 
 using namespace std;
 
@@ -80,40 +81,75 @@ class BST{
             }
             return root;
         }
+
+        Node* leftMost(Node* root){
+
+            Node* left = root;
+            if(left->left==NULL) return left;
+            while (left->left){
+                left = left->left;
+            }
+
+            return left;
+        }
+
+        Node* deleteNode(Node* root,int data){
+            if(data==root->data){
+                if(!root->left && !root->right){
+                    return NULL;
+                }else if(root->left && !root->right){
+                    return root->left;
+                }else if(!root->left && root->right){
+                    return root->right;
+                }else{
+                    Node* leftNode = leftMost(root->right);
+                    root->data = leftNode->data;
+                    deleteNode(root->right,leftNode->data);
+                }
+            }else if(data > root->data){
+                root->right = deleteNode(root->right,data);
+            }else{
+                root->left = deleteNode(root->left,data);
+            }
+            return root;
+        }
+        
+        Node* findNode(Node* root, int value){
+            if(value < root->data){
+                findNode(root->left,value);
+            }else if(value > root->data){
+                findNode(root->right,value);
+            }else{
+                cout << "Founded" << endl;
+            }
+            return root;
+        }
+
+        void printTree(Node* root){
+            if(root==NULL) return;
+            cout << root->data << endl;
+            printTree(root->left);
+            printTree(root->right);
+        }
+
+        int maxHeight(Node* root){
+            if(root == NULL) return 0;
+            int left = maxHeight(root->left);
+            int right = maxHeight(root->right);
+            return max(left,right)+1;
+        }
 };
 
 int main()
 {
+    int i = 8;
     BST bst;
-    int arr[9] = {8,3,10,1,6,14,4,7,13};
-    for(int i = 0; i < 8; i++){
-        bst.root = bst.insertNodeRecur(bst.root,arr[i]);
+    int arr[i] = {5,1,6,0,3,7,2,8};
+
+    for(int j = 0; j < i; j++){
+        bst.insertNode(arr[j]);
     }
-    // bst.root = bst.insertNodeRecur(bst.root,8);
-    // bst.root = bst.insertNodeRecur(bst.root,3);
-    // bst.root = bst.insertNodeRecur(bst.root,10);  
-    // bst.root = bst.insertNodeRecur(bst.root,1);  
-    // bst.root = bst.insertNodeRecur(bst.root,6);
-    // bst.root = bst.insertNodeRecur(bst.root,14);  
-    // bst.root = bst.insertNodeRecur(bst.root,4);
-    // bst.root = bst.insertNodeRecur(bst.root,7);  
-    // bst.root = bst.insertNodeRecur(bst.root,13);
-    // Node* firstNode = new Node;
-    // Node* secondNode = new Node;
-    // Node* thridNode = new Node;
 
-    // firstNode->data = 3;
-    // secondNode->data = 2;
-    // thridNode->data = 1;
-
-    // firstNode->right = secondNode;
-    // firstNode->left = thridNode;
-    
-    // secondNode->left = NULL;
-    // secondNode->right = NULL;
-
-    // thridNode->left = NULL;
-    // thridNode->right = NULL;
-
+    cout << bst.maxHeight(bst.root) << endl;
     cout << "Hello" << endl;
 }
